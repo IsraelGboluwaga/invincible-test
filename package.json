@@ -4,8 +4,8 @@
   "description": "General JS Test",
   "main": "index.ts",
   "scripts": {
-    "start": "node src/index.ts",
-    "test": "mocha src/test.js"
+    "start": "node src/index.js",
+    "test": "mocha src/tests/test.js"
   },
   "author": "Israel Arunah <arunahisraelg2010@gmail.com>",
   "license": "MIT",
