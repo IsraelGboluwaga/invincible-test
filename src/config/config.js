@@ -1,3 +1,3 @@
-module.exports ={
-	OPENWEATHER_API_KEY: process.env.API_KEY
+module.exports = {
+	OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
 }

@@ -1,10 +1,10 @@
-const weatherApiBaseUrl = 'community-open-weather-map.p.rapidapi.com'
+const { OPENWEATHER_API_KEY } = require('./config')
+
+const weatherApiBaseUrl = `http://api.openweathermap.org/data/2.5/weather/APPID=${OPENWEATHER_API_KEY}&`
 
 const endpoints = {
-	apiHost: weatherApiBaseUrl,
-	// zip code and postal code are practically the same
-	getCityAndStateByZipCode: `${weatherApiBaseUrl}/zipinfo`,
-	getWeatherByCityName: `${weatherApiBaseUrl}/weather`
+	getWeatherByZipCode: `${weatherApiBaseUrl}zip=`,
+	getWeatherByCityName: `${weatherApiBaseUrl}q=`,
 }
 
 module.exports = endpoints
