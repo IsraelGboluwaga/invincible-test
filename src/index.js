@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const { getWeatherByZipCode, getWeatherByCityName } = require('./config/externalEndpoints')
+const { getFormattedTimeFromTimeZone } = require('./lib/utilityHelper')
 const get = require('./lib/getHttp')
 
 const outputData = []
