@@ -36,7 +36,7 @@ describe('Get Weather Info And Current Time', () => {
 		expect(response.code).to.equal(400)
 	})
 
-	it('should return an array with key, current_time and weather_info properties as a data property of the return object', () => {
+	it('should return an array as a data property of the return object', () => {
 		// key is the search key- postal code or city name
 		const keys = ['london', 'lagos', '200220', 'paris', '32009']
 		const response = getWeatherAndTimeByLocationOrPostalCode(keys)
