@@ -4,7 +4,7 @@
   "description": "General JS Test",
   "main": "index.ts",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nodemon src/main.js",
     "test": "mocha src/tests/test.js"
   },
   "author": "Israel Arunah <arunahisraelg2010@gmail.com>",
@@ -14,9 +14,11 @@
     "mocha": "^6.1.2"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "city-timezones": "^1.0.7",
     "dotenv": "^7.0.0",
     "moment-timezone": "^0.5.23",
-    "unirest": "^0.6.0"
+    "nodemon": "^1.18.11",
+    "shelljs": "^0.8.3"
   }
 }

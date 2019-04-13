@@ -1,5 +1,5 @@
-const unirest = require('unirest')
+const axios = require('axios')
 
-const getHttp = url => unirest.get(url)
+const getHttp = url => axios.get(url)
 
 module.exports = getHttp

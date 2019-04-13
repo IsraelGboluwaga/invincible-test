@@ -10,11 +10,18 @@ const respond = (data, httpCode) => {
 module.exports.success = (response, status = 200) => {
 	const data = response
 	data.error = false
-	respond(data, status)
+	return respond(data, status)
 }
 
 module.exports.failure = (response, httpCode = 503) => {
 	const data = response
 	data.error = true
-	respond(data, httpCode)
+	return respond(data, httpCode)
 }
+
+
+module.exports.createReturnData = (key, weather_info, current_time, error=false, message='successful') => {
+	return {key, weather_info, current_time, error, message}
+}
+
+module.exports.getResponseBody = response => response.data
