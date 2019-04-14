@@ -18,4 +18,4 @@ const getWeatherByZipCode_ = zip => get(getWeatherByZipCode + zip)
 module.exports = {
 	getWeatherByZipCode_,
 	getTimeZoneFromCityName
-};
+}

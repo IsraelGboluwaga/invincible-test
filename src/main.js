@@ -1,4 +1,4 @@
-const shell = require('shelljs');
+const shell = require('shelljs')
 const { app } = require('./index')
 
 const infoText = () => {
@@ -38,7 +38,7 @@ const main = () => {
 			console.log('Result:')
 			app(cleanData)
 		}
-	});
+	})
 }
 
 main()

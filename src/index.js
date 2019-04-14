@@ -107,17 +107,18 @@ const getWeatherAndTimeByLocationOrPostalCode = async (inputArray) => {
 		outputData.pop()
 	}
 
-	for await (let i of inputArray) {
+	let dataByCity, dataByZip
+	for (let i of inputArray) {
 		if (typeof i !== 'string') return failure({ message: `Input param ${i} is of an invalid type` }, 400)
 
 		// If string => city name
 		if (Number.isNaN(parseInt(i))) {
-			__getWeatherAndTimeByCity(i.toLowerCase())
-				.then(data => console.log('data city', data) || outputData.push(data))
+			dataByCity = await __getWeatherAndTimeByCity(i.toLowerCase())
+			outputData.push(dataByCity)
 		}
 		else {
-			__getWeatherAndTimeByZip(i)
-				.then(data => console.log('data zip', data) || outputData.push(data))
+			dataByZip = await __getWeatherAndTimeByZip(i)
+			outputData.push(dataByZip)
 		}
 	}
 
@@ -129,6 +130,6 @@ const app = async (input) => {
 }
 
 module.exports = {
-	outputData,
+	getWeatherAndTimeByLocationOrPostalCode,
 	app
 }
