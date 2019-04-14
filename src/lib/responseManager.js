@@ -23,5 +23,3 @@ module.exports.failure = (response, httpCode = 503) => {
 module.exports.createReturnData = (key, weather_info, current_time, error=false, message='successful') => {
 	return {key, weather_info, current_time, error, message}
 }
-
-module.exports.getResponseBody = response => response.data

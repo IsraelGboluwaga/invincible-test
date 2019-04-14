@@ -1,4 +1,3 @@
-const {getResponseBody} = require('../lib/responseManager')
 const { getWeatherByZipCode } = require('../config/externalEndpoints')
 const {getWeatherFromCityName} = require('../handlers/cityHandler')
 const {outputData} = require('../index');
@@ -29,7 +28,15 @@ const _getTimeZoneByZipCode = zip => {
 }
 
 const _getWeatherByZipCode = zip => get(getWeatherByZipCode + zip)
-	.then(getResponseBody)
+	.then(data => {
+		if (data.status == 200) {
+			return data.data
+		}
+		else {
+			Promise.reject('Failed request response')
+		}
+	})
+	.catch(e => e)
 
 module.exports = {
 	_getTimeZoneByZipCode,

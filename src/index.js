@@ -8,6 +8,8 @@ const { _getWeatherByZipCode, _getTimeZoneByZipCode } = require('./handlers/zipH
 
 const outputData = []
 
+// const handleApiResponse = (response) => {}
+
 const __getWeatherAndTimeByCity = async cityName => {
 	let weatherData, currentTimeZone, currentTime, error = false, message = []
 
@@ -33,7 +35,7 @@ const __getWeatherAndTimeByCity = async cityName => {
 			}
 
 			return createReturnData(cityName, weatherData, currentTime, error, message)
-		}).catch(err => console.log(err, 'err'))
+		})
 
 	}
 	catch (error) {
@@ -42,21 +44,40 @@ const __getWeatherAndTimeByCity = async cityName => {
 }
 
 const __getWeatherAndTimeByZip = async zip => {
-	let returnData, weatherInfo, currentTimeZone, currentTime, error = false, message = []
+	let returnData, weatherData, currentTimeZone, currentTime, error = false, message = []
 
-	weatherInfo = await _getWeatherByZipCode(zip)
-	currentTimeZone = await _getTimeZoneByZipCode(zip)
-	currentTime = getFormattedTimeFromTimeZone(currentTimeZone)
-	if (!weatherInfo || !currentTime) {
-		error = true
-		if (!weatherInfo) message.push('Weather info could not be retrieved')
+	try {
+		currentTimeZone = await _getTimeZoneByZipCode(zip)
+		currentTime = getFormattedTimeFromTimeZone(currentTimeZone)
 		if (!currentTime) message.push('Current time could not be retrieved')
-		returnData = createReturnData(zip, weatherInfo, currentTime, error, message)
-		return outputData.push(success({ data: returnData, message }))
+
+		return _getWeatherByZipCode(zip).then(weatherInfo => {
+				if (weatherInfo && weatherInfo.cod != 200) {
+					error = true
+					message.push('Weather info could not be retrieved')
+					message.push(weatherInfo.message)
+					weatherData = 'Weather info service is temporarily unavailable'
+					return createReturnData(zip, weatherInfo, currentTime, error, message)
+				}
+				else {
+					weatherData = weatherInfo ? weatherInfo : 'Weather info could not be retrieved'
+
+					if (!weatherInfo || !currentTime) {
+						error = true
+						if (!weatherInfo || (weatherInfo && !weatherInfo.data)) message.push('Weather info could not be retrieved')
+						if (!currentTime) message.push('Current time could not be retrieved')
+					}
+
+					return createReturnData(zip, weatherInfo, currentTime, error)
+				}
+			}
+		)
+
+	}
+	catch (err) {
+		return { error, message: 'An error occurred' }
 	}
 
-	returnData = createReturnData(zip, weatherInfo, currentTime, error)
-	return outputData.push(success({ data: returnData, message: 'successful' }))
 }
 
 const getWeatherAndTimeByLocationOrPostalCode = async (inputArray) => {
@@ -74,15 +95,15 @@ const getWeatherAndTimeByLocationOrPostalCode = async (inputArray) => {
 		// If string => city name
 		if (Number.isNaN(parseInt(i))) {
 			__getWeatherAndTimeByCity(i.toLowerCase())
-				.then(data => console.log('data last', data) || outputData.push(data))
+				.then(data => console.log('data city', data) || outputData.push(data))
 		}
 		else {
 			__getWeatherAndTimeByZip(i)
-				.then(data => outputData.push(data))
+				.then(data => console.log('data zip', data) || outputData.push(data))
 		}
 	}
 
-	return outputData //Find a way to delay this to bring real data
+	return await outputData
 }
 
 const app = async (input) => {
