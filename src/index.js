@@ -4,7 +4,7 @@ dotenv.config()
 const { getFormattedTimeFromTimeZone } = require('./lib/utilityHelper')
 const { success, failure, createReturnData } = require('./lib/responseManager')
 const { getWeatherFromCityName, getTimeZoneByCityName } = require('./handlers/cityHandler')
-const { _getWeatherByZipCode, _getTimeZoneByZipCode } = require('./handlers/zipHandler')
+const { getWeatherByZipCode_, getTimeZoneFromCityName } = require('./handlers/zipHandler')
 
 const outputData = []
 
@@ -15,6 +15,9 @@ const __getWeatherAndTimeByCity = async cityName => {
 
 	try {
 		currentTimeZone = getTimeZoneByCityName(cityName)
+		if (!currentTimeZone) {
+			return createReturnData(cityName, 'Weather info could not be retrieved', 'Time info could not be retrieved', true, 'Invalid city name')
+		}
 		currentTime = getFormattedTimeFromTimeZone(currentTimeZone)
 
 		return getWeatherFromCityName(cityName).then(weatherInfo => {
@@ -39,43 +42,58 @@ const __getWeatherAndTimeByCity = async cityName => {
 
 	}
 	catch (error) {
-		return { error, message: 'An error occurred' }
+		return createReturnData(cityName, 'Error fetching weather info', 'Error fetching time info', true, [error])
 	}
 }
 
-const __getWeatherAndTimeByZip = async zip => {
-	let returnData, weatherData, currentTimeZone, currentTime, error = false, message = []
+const __getWeatherAndTimeByZip = zip => {
+	let weatherData, currentTimeZone, currentTime, error = false, message = []
 
 	try {
-		currentTimeZone = await _getTimeZoneByZipCode(zip)
-		currentTime = getFormattedTimeFromTimeZone(currentTimeZone)
-		if (!currentTime) message.push('Current time could not be retrieved')
 
-		return _getWeatherByZipCode(zip).then(weatherInfo => {
-				if (weatherInfo && weatherInfo.cod != 200) {
+		return getWeatherByZipCode_(zip).then(async weatherInfo => {
+				if (!weatherInfo) {
 					error = true
 					message.push('Weather info could not be retrieved')
 					message.push(weatherInfo.message)
 					weatherData = 'Weather info service is temporarily unavailable'
-					return createReturnData(zip, weatherInfo, currentTime, error, message)
+
+					return createReturnData(zip, weatherData, currentTime, error, message)
 				}
 				else {
-					weatherData = weatherInfo ? weatherInfo : 'Weather info could not be retrieved'
-
-					if (!weatherInfo || !currentTime) {
-						error = true
-						if (!weatherInfo || (weatherInfo && !weatherInfo.data)) message.push('Weather info could not be retrieved')
-						if (!currentTime) message.push('Current time could not be retrieved')
+					if (weatherInfo.cod && weatherInfo.cod != 200) {
+						if (weatherInfo && weatherInfo.cod == 404) {
+							message.push('Invalid zip/postal code')
+							message.push(weatherInfo.message)
+							weatherData = 'Weather info could not be retrieved'
+						} else {
+							error = true
+							message.push('Weather info could not be retrieved')
+							message.push(weatherInfo.message)
+							weatherData = 'Weather info service is temporarily unavailable'
+						}
+						currentTimeZone = null
+					}
+					else {
+						weatherData = weatherInfo ? weatherInfo : 'Weather info could not be retrieved'
+						message.push('successful')
+						currentTimeZone = getTimeZoneFromCityName(weatherData.name)
 					}
 
-					return createReturnData(zip, weatherInfo, currentTime, error)
+					if (!currentTimeZone) {
+						return createReturnData(zip, weatherData, 'Time info could not be retrieved', true, 'Invalid city name')
+					}
+					currentTime = getFormattedTimeFromTimeZone(currentTimeZone)
+					if (!currentTime) message.push('Current time could not be retrieved')
+
+					return createReturnData(zip, weatherData, currentTime, error, message)
 				}
 			}
 		)
 
 	}
 	catch (err) {
-		return { error, message: 'An error occurred' }
+		return createReturnData(zip, 'Error fetching weather info', 'Error fetching time info', true, [err])
 	}
 
 }
@@ -103,7 +121,7 @@ const getWeatherAndTimeByLocationOrPostalCode = async (inputArray) => {
 		}
 	}
 
-	return await outputData
+	return outputData
 }
 
 const app = async (input) => {

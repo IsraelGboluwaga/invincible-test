@@ -21,6 +21,10 @@ const main = () => {
 			// Program exit.
 			console.log("Program stopped. Thanks for coming :-)")
 			process.exit()
+		} else if (data === '\n') {
+			console.log('\n')
+			main()
+			console.log('\n')
 		} else if (data === 'clear\n') {
 			shell.exec('clear')
 			infoText()

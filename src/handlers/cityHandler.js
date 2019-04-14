@@ -1,5 +1,4 @@
 const tzCitySearch = require('city-timezones').lookupViaCity
-const { getResponseBody } = require('../lib/responseManager')
 const { getWeatherByCityName } = require('../config/externalEndpoints')
 const get = require('../lib/getHttp')
 
@@ -14,7 +13,10 @@ const getWeatherFromCityName = cityName => get(getWeatherByCityName + cityName)
 	})
 	.catch(e => e)
 
-const getTimeZoneByCityName = cityName => tzCitySearch(cityName)[0].timezone
+const getTimeZoneByCityName = cityName => {
+	const response = tzCitySearch(cityName)
+	return response && Array.isArray(response) && response.length > 0 ? response[0].timezone : null
+}
 
 module.exports = {
 	getWeatherFromCityName,

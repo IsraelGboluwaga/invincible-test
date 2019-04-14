@@ -1,33 +1,10 @@
 const { getWeatherByZipCode } = require('../config/externalEndpoints')
-const {getWeatherFromCityName} = require('../handlers/cityHandler')
-const {outputData} = require('../index');
+const { getTimeZoneByCityName } = require('../handlers/cityHandler')
 const get = require('../lib/getHttp')
 
+const getTimeZoneFromCityName = (weatherInfo) => getTimeZoneByCityName(weatherInfo)
 
-
-const _getTimeZoneByZipCode = zip => {
-	let city
-	if (outputData && outputData.length > 0) {
-		for (let i of outputData) {
-			city = i.key === zip ? i.weather_info.name : null
-		}
-	}
-
-	try {
-		if (!city) {
-			const weatherInfo = _getWeatherByZipCode(zip)
-			city = weatherInfo && weatherInfo.name ? weatherInfo.name : 'No weather info was found'
-		}
-		const cityTimeZone = city ? getWeatherFromCityName(city) : 'No timezone was found for this city'
-
-		return cityTimeZone
-	}
-	catch (err) {
-		console.log('Error =>', err)
-	}
-}
-
-const _getWeatherByZipCode = zip => get(getWeatherByZipCode + zip)
+const getWeatherByZipCode_ = zip => get(getWeatherByZipCode + zip)
 	.then(data => {
 		if (data.status == 200) {
 			return data.data
@@ -36,9 +13,9 @@ const _getWeatherByZipCode = zip => get(getWeatherByZipCode + zip)
 			Promise.reject('Failed request response')
 		}
 	})
-	.catch(e => e)
+	.catch(e => e.response.data || e)
 
 module.exports = {
-	_getTimeZoneByZipCode,
-	_getWeatherByZipCode
+	getWeatherByZipCode_,
+	getTimeZoneFromCityName
 };
