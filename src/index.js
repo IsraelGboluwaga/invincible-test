@@ -122,11 +122,11 @@ const getWeatherAndTimeByLocationOrPostalCode = async (inputArray) => {
 		}
 	}
 
-	return outputData
+	return success({ data: outputData, message: 'successful' })
 }
 
 const app = async (input) => {
-	console.log('Response', await getWeatherAndTimeByLocationOrPostalCode(input))
+	console.log(await getWeatherAndTimeByLocationOrPostalCode(input))
 }
 
 module.exports = {

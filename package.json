@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon src/main.js",
-    "test": "mocha src/tests/test.js"
+    "test": "mocha src/tests/test.js --timeout 10000"
   },
   "author": "Israel Arunah <arunahisraelg2010@gmail.com>",
   "license": "MIT",
