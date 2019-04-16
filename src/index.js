@@ -108,17 +108,17 @@ const getWeatherAndTimeByLocationOrPostalCode = async (inputArray) => {
 	}
 
 	let dataByCity, dataByZip
-	for (let i of inputArray) {
+	for await (let i of inputArray) {
 		if (typeof i !== 'string') return failure({ message: `Input param ${i} is of an invalid type` }, 400)
 
 		// If string => city name
 		if (Number.isNaN(parseInt(i))) {
 			dataByCity = await __getWeatherAndTimeByCity(i.toLowerCase())
-			outputData.push(dataByCity)
+			outputData.push(JSON.stringify(dataByCity))
 		}
 		else {
 			dataByZip = await __getWeatherAndTimeByZip(i)
-			outputData.push(dataByZip)
+			outputData.push(JSON.stringify(dataByZip))
 		}
 	}
 
