@@ -3,9 +3,6 @@
 General JS test
 
 
-## tools used
-node.js
-
 ## Execution instructions
 - `git clone https://github.com/IsraelGboluwaga/invincible-test.git`
 - `cd invincible-test`
