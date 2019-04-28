@@ -59,13 +59,14 @@ describe('Get Weather Info And Current Time', () => {
 		expect(response.data).to.have.lengthOf(keys.length)
 	})
 
-	it ('object in data array of response should contain key, weather_info, current_time, error and message', async () => {
+	it('object in data array of response should contain key, weather_info, current_time, error and message', async () => {
 		const keys = ['london', 'lagos', '200220', 'paris', '32009']
 		const response = await getWeatherAndTimeByLocationOrPostalCode(keys)
 		expect(response).to.exist
 		expect(response).to.be.an('object')
 		expect(response).to.have.property('data')
 		expect(response.data).to.be.an('array')
+		response.data[0] = JSON.parse(response.data[0])
 		expect(response.data[0]).to.be.an('object')
 		expect(response.data[0]).to.have.property('key')
 		expect(response.data[0]).to.have.property('weather_info')
