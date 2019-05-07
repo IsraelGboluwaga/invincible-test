@@ -1,6 +1,6 @@
 # invincible-test
 
-General JS test
+This is a cli application that makes use of node `stdin` library and `shell.js`. It gets a city's current time and weather info when you input the city name and/or the zip or postal code.
 
 
 ## Execution instructions
