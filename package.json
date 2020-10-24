@@ -14,7 +14,7 @@
     "mocha": "^8.1.2"
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
     "city-timezones": "^1.0.7",
     "dotenv": "^8.2.0",
     "moment-timezone": "^0.5.23",
